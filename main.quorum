@@ -48,7 +48,7 @@ class Main
             end
         end
 
-        text import = input("Enter the path to the polymer.html file: ")
+        text import = input("Enter the path to the polymer.html file (include polymer.html in the path!): ")
 
         importPaths:Add(import)
 
