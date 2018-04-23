@@ -76,13 +76,13 @@ class PolymerElementGenerator
             counter = 0
 
             if listenerTypes:GetSize() = 1
-                writer:WriteLine("              '" + listenerTypes:Get(counter) + "' : '" + functionNames:Get(counter) + "'")
+                writer:WriteLine("              '" + listenerTypes:Get(counter) + "': '" + functionNames:Get(counter) + "'")
             else 
                 repeat size times
                     if counter < (listenerTypes:GetSize() - 1)
-                        writer:WriteLine("              '" + listenerTypes:Get(counter) + "' : '" + functionNames:Get(counter) + "', ")
+                        writer:WriteLine("              '" + listenerTypes:Get(counter) + "': '" + functionNames:Get(counter) + "', ")
                     else
-                        writer:WriteLine("              '" + listenerTypes:Get(counter) + "' : '" + functionNames:Get(counter) + "'")
+                        writer:WriteLine("              '" + listenerTypes:Get(counter) + "': '" + functionNames:Get(counter) + "'")
                     end
 
                     counter = counter + 1
@@ -94,17 +94,17 @@ class PolymerElementGenerator
             counter = 0
 
             if functionNames:GetSize() = 1
-                writer:WriteLine("          " + functionNames:Get(counter) + " : function() {")
+                writer:WriteLine("          " + functionNames:Get(counter) + ": function() {")
                 writer:WriteLine("              ")
                 writer:WriteLine("          }")
             else
                 repeat functionNames:GetSize() times
                     if counter < (functionNames:GetSize() - 1)
-                        writer:WriteLine("          " + functionNames:Get(counter) + " : function() {")
+                        writer:WriteLine("          " + functionNames:Get(counter) + ": function() {")
                         writer:WriteLine("              ")
                         writer:WriteLine("          },")
                     else
-                        writer:WriteLine("          " + functionNames:Get(counter) + " : function() {")
+                        writer:WriteLine("          " + functionNames:Get(counter) + ": function() {")
                         writer:WriteLine("              ")
                         writer:WriteLine("          }")
                     end
