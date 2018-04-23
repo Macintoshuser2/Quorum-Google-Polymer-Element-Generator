@@ -1,0 +1,121 @@
+use Libraries.Containers.HashTable
+use Libraries.Containers.Array
+use Libraries.System.File
+use Libraries.System.Blueprints.FileWriterBlueprint
+use Libraries.System.Blueprints.FileReaderBlueprint
+
+class PolymerElementGenerator
+
+    private Array<text> behaviors
+
+    /*
+        This function generates an HTML file with a basic Google Polymer 1.x 
+        custome element template with the specified listeners types and functions
+    */
+    action Generate(text fileName, text elementName, HashTable<text, text> listeners, Array<text> behaviors, Array<text> importPaths)
+        File file
+        Array<text> listenerTypes = listeners:CopyToKeyArray()
+        Array<text> functionNames = listeners:CopyToValueArray()
+        me:behaviors = behaviors
+        
+        file:SetPath(fileName + ".html")
+
+        // If the file already exists, clear the file's content.
+        if file:Exists()
+            text fileContent = file:Read()
+            fileContent = ""
+            file:Write(fileContent)
+        end
+
+        FileWriterBlueprint writer = file:OpenForWriteAppend()
+        
+        integer counter = 0
+
+        repeat importPaths:GetSize() times
+            writer:WriteLine("<link rel='import' href='" + importPaths:Get(counter) + "'>")
+            counter = counter + 1
+        end
+        
+        writer:WriteLine("<dom-module id='" + elementName + "'>")
+        writer:WriteLine("  <template><style></style></template>")
+        writer:WriteLine("  <script>")
+        writer:WriteLine("      Polymer({")
+        
+        if listeners:IsEmpty() and behaviors:IsEmpty()
+            writer:WriteLine("          is: '" + elementName + "'")
+        else 
+            writer:WriteLine("          is: '" + elementName + "',")
+        end
+
+        if not behaviors:IsEmpty()
+            writer:WriteLine("          behaviors: [")
+
+            counter = 0
+
+            if behaviors:GetSize() = 1
+                writer:WriteLine("              " + behaviors:Get(counter))
+            else
+                repeat behaviors:GetSize() times
+                    if counter < (behaviors:GetSize() - 1)
+                        writer:WriteLine("              " + behaviors:Get(counter) + ", ")
+                    else
+                        writer:WriteLine("              " + behaviors:Get(counter))
+                    end
+
+                    counter = counter + 1
+                end
+            end
+        
+            writer:WriteLine("          ],")
+        end
+
+        if not listeners:IsEmpty()
+            writer:WriteLine("          listeners: {")
+        
+            integer size = listenerTypes:GetSize()
+            counter = 0
+
+            if listenerTypes:GetSize() = 1
+                writer:WriteLine("              '" + listenerTypes:Get(counter) + "' : '" + functionNames:Get(counter) + "'")
+            else 
+                repeat size times
+                    if counter < (listenerTypes:GetSize() - 1)
+                        writer:WriteLine("              '" + listenerTypes:Get(counter) + "' : '" + functionNames:Get(counter) + "', ")
+                    else
+                        writer:WriteLine("              '" + listenerTypes:Get(counter) + "' : '" + functionNames:Get(counter) + "'")
+                    end
+
+                    counter = counter + 1
+                end
+            end
+
+            writer:WriteLine("          },")
+
+            counter = 0
+
+            if functionNames:GetSize() = 1
+                writer:WriteLine("          " + functionNames:Get(counter) + " : function() {")
+                writer:WriteLine("              ")
+                writer:WriteLine("          }")
+            else
+                repeat functionNames:GetSize() times
+                    if counter < (functionNames:GetSize() - 1)
+                        writer:WriteLine("          " + functionNames:Get(counter) + " : function() {")
+                        writer:WriteLine("              ")
+                        writer:WriteLine("          },")
+                    else
+                        writer:WriteLine("          " + functionNames:Get(counter) + " : function() {")
+                        writer:WriteLine("              ")
+                        writer:WriteLine("          }")
+                    end
+                end
+            end
+        end
+
+        writer:WriteLine("      )};")
+        writer:WriteLine("  </script>")
+        writer:WriteLine("</dom-module>")
+
+        file:Close()
+    end
+end

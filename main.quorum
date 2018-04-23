@@ -1,0 +1,66 @@
+use Libraries.Containers.Array
+use Libraries.Containers.HashTable
+class Main
+    action Main
+        PolymerElementGenerator generator
+        
+        CreateElement(generator)
+    end
+
+    action CreateElement(PolymerElementGenerator generator)
+        text fileName = input("File Name: ")
+        text elementName = input("Element Name (ex: paper-checkbox): ")
+        text listener = input("Add Listener? (yes/no): ")
+        HashTable<text, text> listeners
+        Array<text> behaviors
+        Array<text> importPaths
+
+        if listener:EqualsIgnoringCase("yes")
+            text type = input("Listener Type: ")
+            text function = input("Listener Function Name: ")
+            listeners:Add(type, function)
+
+            text addAnotherListenerChoice = input("Add another listener? (yes/no): ")
+
+            repeat while addAnotherListenerChoice:EqualsIgnoringCase("yes")
+                text listenerType = input("Listener Type: ")
+                text listenerFunction = input("Listener Function Name: ")
+
+                listeners:Add(listenerType, listenerFunction)
+
+                addAnotherListenerChoice = input("Add another listener? (yes/no): ")
+            end
+        end
+
+        text addBehaviors = input("Add Behavior? (yes/no): ")
+
+        if addBehaviors:EqualsIgnoringCase("yes")
+            text behavior = input("Behavior Name: ")
+            behaviors:Add(behavior)
+
+            text addAnotherBehaviorChoice = input("Add another behavior? (yes/no): ")
+
+            repeat while addAnotherBehaviorChoice:EqualsIgnoringCase("yes")
+                text behaviorName = input("Behavior Name: ")
+                behaviors:Add(behaviorName)
+
+                addAnotherBehaviorChoice = input("Add another behavior? (yes/no): ")
+            end
+        end
+
+        text import = input("Enter the path to the polymer.html file: ")
+
+        importPaths:Add(import)
+
+        text addAnotherImport = input("Do you have another import? (yes/no)")
+
+        repeat while addAnotherImport:EqualsIgnoringCase("yes")
+            import = input("Enter the path to the file you want to import: ")
+            importPaths:Add(import)
+
+            addAnotherImport = input("Do you have another import? (yes/no)")
+        end
+
+        generator:Generate(fileName, elementName, listeners, behaviors, importPaths)
+    end
+end
